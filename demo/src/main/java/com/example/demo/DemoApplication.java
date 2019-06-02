@@ -25,40 +25,44 @@ public class DemoApplication {
 
     public static void main(String[] args)
 	{
-        RSSFeedParser parser = new RSSFeedParser(
-                "https://www.vogella.com/article.rss");
-        Feed feed = parser.readFeed();
-        System.out.println(feed);
-        for (FeedMessage message : feed.getMessages())
-        {
-            System.out.println(message);
-
-        }
-
 		MongoClient mongo = new MongoClient("localhost", 27017);
 		System.out.println("connection successfully");
 		MongoDatabase db=mongo.getDatabase("article");
 		System.out.println(db.getName());
 
 		//List <String> dbname = mongo.getDatabaseNames();
-		//System.out.println(dbname);
+		//System.out.println(dbname);.
 
 		//db.createCollection("sample");
 		MongoCollection<Document> collection = db.getCollection("rssfeed");
 		System.out.println("Collection  selected successfully");
 
 
-		Document document = new Document("id",1)
-				.append("title",feed.getTitle())
-				.append("pub date", feed.getPubDate())
-				.append("Description", feed.getDescription())
-				.append("link", feed.getLink());
-
-		collection.insertOne(document);
-		System.out.println("Document inserted successfully");
 
 
+		RSSFeedParser parser = new RSSFeedParser(
+                "https://timesofindia.indiatimes.com/rssfeedstopstories.cms");
+        Feed feed = parser.readFeed();
+        //System.out.println(feed);
 
+        int count=0;
+        for (FeedMessage message : feed.getMessages())
+        {
+            System.out.println(message);
+
+			Document document;
+			document = new Document("id",count+1)
+					.append("title",message.getTitle())
+					.append("pub date", message.getPubDate())
+					.append("Description", message.getDescription())
+					.append("link", message.getLink());
+
+			collection.insertOne(document);
+			System.out.println("Document inserted successfully");
+
+
+         count++;
+		}
 
 	}
 }
