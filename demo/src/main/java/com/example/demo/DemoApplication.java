@@ -23,11 +23,10 @@ import com.example.demo.RSSFeedParser;
 
 public class DemoApplication {
 
-    public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		MongoClient mongo = new MongoClient("localhost", 27017);
 		System.out.println("connection successfully");
-		MongoDatabase db=mongo.getDatabase("article");
+		MongoDatabase db = mongo.getDatabase("article");
 		System.out.println(db.getName());
 
 		//List <String> dbname = mongo.getDatabaseNames();
@@ -38,22 +37,19 @@ public class DemoApplication {
 		System.out.println("Collection  selected successfully");
 
 
-
-
 		RSSFeedParser parser = new RSSFeedParser(
-                "https://timesofindia.indiatimes.com/rssfeedstopstories.cms");
-        Feed feed = parser.readFeed();
-        //System.out.println(feed);
+				"https://timesofindia.indiatimes.com/rssfeedstopstories.cms");
+		Feed feed = parser.readFeed();
+		//System.out.println(feed);
 
-        int count=0;
-        for (FeedMessage message : feed.getMessages())
-        {
-            System.out.println(message);
+		int count = 0;
+		for (FeedMessage message : feed.getMessages()) {
+			System.out.println(message);
 
 			Document document;
-			document = new Document("id",count+1)
-					.append("title",message.getTitle())
-					.append("pub date", message.getPubDate())
+			document = new Document("id", count + 1)
+					.append("title", message.getTitle())
+					.append("pub date", message.getpubDate())
 					.append("Description", message.getDescription())
 					.append("link", message.getLink());
 
@@ -61,9 +57,21 @@ public class DemoApplication {
 			System.out.println("Document inserted successfully");
 
 
-         count++;
+			count++;
 		}
 
+
+		MongoDatabase database = mongo.getDatabase("article");
+		MongoCollection<Document> collect = database.getCollection("rssfeed");
+
+		List<Document> documents = (List<Document>) collect.find().into(new ArrayList<Document>());
+
+		for (Document document : documents) {
+			System.out.println(document);
+
+
+		}
 	}
+
 }
 

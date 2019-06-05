@@ -1,1 +1,4 @@
+com/example/demo/Feed.class
 com/example/demo/DemoApplication.class
+com/example/demo/FeedMessage.class
+com/example/demo/RSSFeedParser.class
